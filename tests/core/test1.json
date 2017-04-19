@@ -1,0 +1,67 @@
+[
+  {
+    "command": "insert",
+    "key": "/group/test",
+    "value": "val /group/test"
+  },
+
+  {
+    "command": "insert",
+    "key": "/group/something else",
+    "value": "val /group/something else"
+  },
+
+  {
+    "command": "insert",
+    "key": "/group/more/specific",
+    "value": "val /group/more/specific"
+  },
+
+  {
+    "command": "insert",
+    "key": "/group/xxx",
+    "value": "val /group/xxx"
+  },
+
+  {
+    "command": "insert",
+    "key": "/something/group/blah",
+    "value": "val /something/group/blah"
+  },
+
+  {
+    "command": "find_matching",
+    "key": "/group/xxx",
+    "results": ["val /group/xxx"]
+  },
+
+  {
+    "command": "find_matching",
+    "key": "group/xxx",
+    "results": ["val /group/xxx"]
+  },
+
+  {
+    "command": "find_matching",
+    "key": "xxx/",
+    "results": []
+  },
+
+  {
+    "command": "find_matching",
+    "key": "xxx",
+    "results": ["val /group/xxx"]
+  },
+
+  {
+    "command": "find_matching",
+    "key": "group",
+    "results": ["val /group"]
+  },
+
+  {
+    "command": "find_matching",
+    "key": "group/",
+    "results": ["wat"]
+  }
+]

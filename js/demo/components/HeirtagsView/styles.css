@@ -1,0 +1,84 @@
+.search {
+  border: 1px solid black;
+  padding: 4px 8px;
+  border-radius: 4px;
+  width: 100%;
+}
+
+.arrow {
+  position: relative;
+}
+
+.arrow::before {
+  content: '>';
+  position: absolute;
+  left: -10px;
+  transition: transform ease-out 0.1s;
+  z-index: -1;
+}
+
+.arrowActive::before {
+  transform: rotate(90deg);
+}
+
+.arrow:hover::before {
+  cursor: pointer;
+}
+
+.arrowLabel {
+  color: #000;
+}
+
+.arrowLabel:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+:global .tree-view {
+  padding-left: 10px;
+}
+
+.selectedTag {
+  background: #2996CC;
+  color: #FFF;
+  padding: 5px 10px;
+  margin-bottom: 5px;
+  border-radius: 5px;
+}
+
+.selectedTag::before {
+  content: '\2715';
+  padding-right: 5px;
+  color: #B3D4FC;
+  font-size: 12px;
+}
+
+.selectedTag:hover {
+  cursor: pointer;
+  background: #ED314A;
+}
+
+.selectedTag:hover::before {
+  color: white;
+}
+
+.isSelected {
+  font-weight: bold;
+}
+
+.selectedTag:nth-last-of-type(1) {
+  margin-bottom: 5px;
+}
+
+.autocomplete {
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+.autocompleteItem {
+  color: black;
+}
+
+.autocompleteItem:hover {
+  cursor: pointer;
+}

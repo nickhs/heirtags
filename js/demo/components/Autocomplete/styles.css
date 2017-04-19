@@ -1,0 +1,16 @@
+.autocompleteItem {
+  font-size: 14px;
+  padding: 5px;
+  background: white;
+  z-index: 2;
+  color: black;
+}
+
+.autocompleteItem:hover {
+  cursor: pointer;
+}
+
+.highlighted {
+  background: #2996CC;
+  color: white;
+}
