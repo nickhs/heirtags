@@ -1,0 +1,49 @@
+[
+  {
+    "command": "insert",
+    "key": "/root/test/1",
+    "value": "val /root/test/1"
+  },
+
+  {
+    "command": "find_matching",
+    "key": "test/1",
+    "results": ["val /root/test/1"]
+  },
+
+  {
+    "command": "find_matching",
+    "key": "/test/1",
+    "results": []
+  },
+
+  {
+    "command": "find_matching",
+    "key": "root/test/",
+    "results": ["val /root/test/1"]
+  },
+
+  {
+    "command": "find_matching",
+    "key": "root/test/*",
+    "results": ["val /root/test/1"]
+  },
+
+  {
+    "command": "find_matching",
+    "key": "root/test/foo*",
+    "results": []
+  },
+
+  {
+    "command": "insert",
+    "key": "/root/test/foobar",
+    "value": "val /root/test/foobar"
+  },
+
+  {
+    "command": "find_matching",
+    "key": "root/test/foo*",
+    "results": ["val /root/test/foobar"]
+  }
+]

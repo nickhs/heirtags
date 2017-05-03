@@ -56,12 +56,18 @@
   {
     "command": "find_matching",
     "key": "group",
-    "results": ["val /group"]
+    "results": [],
+    "_comment": "FIXME this test is broken?"
   },
 
   {
     "command": "find_matching",
     "key": "group/",
-    "results": ["wat"]
+    "results": [
+      "val /group/xxx",
+      "val /group/test",
+      "val /group/something else",
+      "val /something/group/blah"
+    ]
   }
 ]

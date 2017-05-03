@@ -28,7 +28,7 @@ public class PostgresqlQueries {
     public static final String FIND_MATCHING_ITEMS = String.join("\n",
             "SELECT id FROM heirtags",
         "WHERE parent_id IS NOT DISTINCT FROM ?",
-        "AND name = ?");
+        "AND name LIKE ?");
 
     public static final String INSERT_ITEM = String.join("\n",
             "INSERT INTO heirtags (id, name, parent_id)",

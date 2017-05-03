@@ -44,6 +44,7 @@ Every book (entity) could have multiple tags accordingly, and it's easy to add n
 
 
 from itertools import chain
+import fnmatch
 
 
 class Entity:
@@ -51,7 +52,7 @@ class Entity:
         self.entity_id = entity_id
 
     def __repr__(self):
-        return self.__str__
+        return self.__str__()
 
     def __str__(self):
         return "<Entity %s>" % self.entity_id
@@ -165,18 +166,17 @@ class TagBag:
         # doing a root lookup
         if key.startswith('/'):
             possible = [k for k in possible if k.is_root()]
-            assert(len(possible) == 1)
 
-        for key in keys:
+        for subkey in keys:
             new_possible = []
             for pos in possible:
                 for children in pos.children:
-                    if children.value.startswith(key):
+                    if fnmatch.fnmatch(children.value, subkey):
                         new_possible.append(children)
 
             possible = new_possible
 
-        # Handle asking for the children
+        # Handle asking for descendants
         if key.endswith('/'):
             possible = list(chain(*[x.children for x in possible]))
 

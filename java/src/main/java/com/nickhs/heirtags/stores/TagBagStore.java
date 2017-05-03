@@ -9,6 +9,7 @@ import java.util.Set;
  * Created by nickhs on 1/31/17.
  */
 public interface TagBagStore<E> {
+    // FIXME how to avoid throws Exception?
     void insert(TagPath key, E value) throws Exception;
 
     /**

@@ -13,4 +13,10 @@ public class MemoryStoreTest {
         TagBagStoreTest test = new TagBagStoreTest(MemoryStore::new);
         test.allTests();
     }
+
+    @Test
+    public void testExternal() throws Exception {
+        ExternalTest test = new ExternalTest(MemoryStore::new);
+        test.runExternalTests();
+    }
 }

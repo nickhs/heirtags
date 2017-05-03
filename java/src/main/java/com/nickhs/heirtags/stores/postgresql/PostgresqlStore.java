@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 // with serializing/deserializing objects. We can let the caller
 // handle that...
 public class PostgresqlStore implements TagBagStore<String> {
-    // NB: this is also harcoded in the sqls
+    // NB: this is also hardcoded in the sqls
     // FIXME(nickhs): make this user customizable?
     public static final String TABLE_NAME = "heirtags";
 
@@ -103,12 +103,18 @@ public class PostgresqlStore implements TagBagStore<String> {
 
         PreparedStatement statement = connection.prepareStatement(PostgresqlQueries.FIND_MATCHING_ITEMS);
         while (iterator.hasNext() && previousIds.size() > 0) {
-            String item = iterator.next().getUnderlying().get(0);
+            String pattern = iterator.next().getUnderlying().get(0);
+            if (pattern.equals("**")) {
+                // FIXME(nickhs): if it's a ** we need to get all it's children
+                throw new RuntimeException("not implemented");
+            }
+
+            pattern = pattern.replace('*', '%');
             HashSet<Integer> oldIds = new HashSet<>(previousIds);
             previousIds = new HashSet<>();
             for (Integer previousId : oldIds) {
                 statement.setInt(1, previousId);
-                statement.setString(2, item);
+                statement.setString(2, pattern);
                 resultSet = statement.executeQuery();
 
                 while (resultSet.next()) {

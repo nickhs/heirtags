@@ -2,6 +2,9 @@ package com.nickhs.heirtags.stores;
 
 import com.nickhs.heirtags.TagPath;
 import com.nickhs.heirtags.TagSearchPath;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
@@ -18,12 +21,15 @@ import java.util.stream.Collectors;
  *
  * Created by nickhs on 1/31/17.
  */
+@Slf4j
 public class MemoryStore<E> implements TagBagStore<E> {
 
     /**
      * Internal class that holds the entities for a path
      * and a reference to it's parent
      */
+    @ToString(exclude = {"children", "parent"})
+    @EqualsAndHashCode(exclude = {"children", "parent"})
     private class TagNode {
         private final TagNode parent;
         private final Set<TagNode> children;
@@ -71,7 +77,7 @@ public class MemoryStore<E> implements TagBagStore<E> {
         // We travel along the tag path adding nodes as necessary
         Iterator<TagPath> iterator = key.iterator();
         TagPath path = iterator.next();
-        List<TagNode> matches = this.store.getOrDefault(path, new ArrayList<>());
+        List<TagNode> matches = this.store.getOrDefault(path.getUnderlying().get(0), new ArrayList<>());
         List<TagNode> validMatches = matches.stream()
                 .filter(x -> !x.getParent().isPresent()).collect(Collectors.toList());
 
@@ -79,17 +85,20 @@ public class MemoryStore<E> implements TagBagStore<E> {
         if (validMatches.size() == 0) {
             prev = new TagNode(new ArrayList<E>(), path, null);
             validMatches.add(prev);
+            // we don't call #toString here as we don't want to get
+            // an object with the root tag identifier (/)
             this.store.put(path.getUnderlying().get(0), validMatches);
         } else if (validMatches.size() == 1) {
            prev = validMatches.get(0);
         } else {
+            // there should be only one root node...
             //noinspection ConstantConditions
             assert(false);
         }
 
         while (iterator.hasNext()) {
             TagPath next = iterator.next();
-            matches = this.store.getOrDefault(next, new ArrayList<>());
+            matches = this.store.getOrDefault(next.getUnderlying().get(0), new ArrayList<>());
             TagNode finalPrev = prev;
             //noinspection ConstantConditions
             validMatches = matches.stream()
@@ -102,8 +111,11 @@ public class MemoryStore<E> implements TagBagStore<E> {
                 match = new TagNode(new ArrayList<>(), next, prev);
                 matches.add(match);
                 this.store.put(next.getUnderlying().get(0), matches);
-            } else {
+            } else if (validMatches.size() == 0) {
                 match = validMatches.get(0);
+            } else {
+                // FIXME(nickhs): better error message here
+                throw new IllegalStateException("wat.");
             }
 
             prev.children.add(match);
@@ -116,32 +128,57 @@ public class MemoryStore<E> implements TagBagStore<E> {
     private List<TagNode> getOrDefault(TagSearchPath search, List<TagNode> defaults) {
         assert search.getUnderlying().size() == 1;
         String key = search.getUnderlying().get(0);
-
-        /*
-        // do a regex match on all keys
-        if (tagPath.isComplex()) {
-            if (key.equals("*")) {
-                key = ".*";
-            }
-
-            Pattern pattern = Pattern.compile(key);
-            return this.store.entrySet().stream().filter(x -> {
-                return pattern.matcher(x.getKey()).matches();
-            }).map(Map.Entry::getValue).reduce(new ArrayList<TagNode<E>>(),
-            (prev, next) -> {
-                prev.addAll(next);
-                return prev;
-            });
-        }
-        */
-
         return this.store.getOrDefault(key, defaults);
     }
 
     private boolean matches(TagSearchPath searchPath, TagPath name) {
-        PathMatcher matcher = FileSystems.getDefault()
-                .getPathMatcher(String.format("glob:%s", searchPath.toString()));
-        return matcher.matches(Paths.get(name.toString()));
+        String searchPathS = searchPath.toString();
+        String nameS = name.toString();
+        assert !searchPathS.contains("**");
+
+        if (searchPathS.equals("*")) {
+            return true;
+        }
+
+        // now we perform the glob matching
+        // taken from https://research.swtch.com/glob
+        int px = 0;
+        int nx = 0;
+        int nextPx = 0;
+        int nextNx = 0;
+
+        while (px < searchPathS.length() ||
+                nx < nameS.length()) {
+
+            if (px < searchPathS.length()) {
+                char patChar = searchPathS.charAt(px);
+
+                if (patChar == '*') {
+                    nextPx = px;
+                    nextNx = nx + 1;
+                    px++;
+                    continue;
+                }
+
+                else {
+                    if (nx < nameS.length() && nameS.charAt(nx) == patChar) {
+                        px++;
+                        nx++;
+                        continue;
+                    }
+                }
+            }
+
+            if (0 < nextNx && nextNx <= nameS.length()) {
+                px = nextPx;
+                nx = nextNx;
+                continue;
+            }
+
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -152,8 +189,17 @@ public class MemoryStore<E> implements TagBagStore<E> {
         Iterator<TagSearchPath> iterator = key.iterator();
         TagSearchPath path = iterator.next();
 
+        // FIXME what about initial tag paths having globbing?
         Set<TagNode> prev = new HashSet<>(
                 getOrDefault(path, Collections.emptyList()));
+
+        // if this is an explicit root node search,
+        // then only grab root nodes
+        if (key.isRoot()) {
+            prev = prev.stream()
+                    .filter(x -> !x.getParent().isPresent())
+                    .collect(Collectors.toSet());
+        }
 
         while (iterator.hasNext()) {
             TagSearchPath next = iterator.next();
@@ -161,15 +207,6 @@ public class MemoryStore<E> implements TagBagStore<E> {
                     .flatMap(x -> x.getChildren().stream())
                     .filter(x -> matches(next, x.name))
                     .collect(Collectors.toSet());
-
-                    /*
-            List<TagNode<E>> newMatches = getOrDefault(
-                    next, Collections.emptyList());
-            matches = newMatches.stream()
-                    .filter(x -> x.getParent().isPresent())
-                    .filter(x -> finalMatches.contains(x.getParent().get()))
-                    .collect(Collectors.toSet());
-                    */
         }
 
         Set<E> ret = new HashSet<>();

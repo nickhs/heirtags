@@ -55,7 +55,7 @@ See `main.py` for an example.
 
 ### Running Tests
 
-    $ nose
+    $ nosetests
 
 ## TODO
 

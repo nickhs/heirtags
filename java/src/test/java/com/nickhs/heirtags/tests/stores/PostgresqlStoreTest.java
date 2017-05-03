@@ -48,16 +48,9 @@ public class PostgresqlStoreTest {
         Connection conn = connFactory();
         PostgresqlStore store = new PostgresqlStore(conn);
         store.insert(new TagPath("/test"), "test");
-        PostgresqlStore store2 = new PostgresqlStore(conn);
-        store2.insert(new TagPath("/test/2"), "1");
-        store2.insert(new TagPath("/test/3"), "2");
-        store2.insert(new TagPath("/test/2"), "3");
-    }
-
-    @Test
-    public void testFindMatching() throws SQLException {
-        Connection conn = connFactory();
-        PostgresqlStore store = new PostgresqlStore(conn);
+        store.insert(new TagPath("/test/2"), "1");
+        store.insert(new TagPath("/test/3"), "2");
+        store.insert(new TagPath("/test/2"), "3");
         Set<String> ret = store.findMatching(new TagSearchPath("/test/2"));
         assertEquals(ret.size(), 2);
         assertTrue(ret.contains("1"));
@@ -66,8 +59,17 @@ public class PostgresqlStoreTest {
 
     @Test
     public void testInterface() throws Exception {
+        testCreateDb();
         Connection conn = connFactory();
         TagBagStoreTest test = new TagBagStoreTest(() -> new PostgresqlStore(conn));
         test.allTests();
+    }
+
+    @Test
+    public void testExternalTests() throws Exception {
+        testCreateDb();
+        Connection conn = connFactory();
+        ExternalTest test = new ExternalTest(() -> new PostgresqlStore(conn));
+        test.runExternalTests();
     }
 }
