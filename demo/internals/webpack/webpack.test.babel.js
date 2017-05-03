@@ -4,7 +4,7 @@
 
 const webpack = require('webpack');
 const modules = [
-  'app',
+  'demo',
   'node_modules',
 ];
 

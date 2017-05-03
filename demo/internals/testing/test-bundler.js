@@ -9,5 +9,5 @@ chai.use(chaiEnzyme());
 
 // Include all .js files under `app`, except app.js, reducers.js, and routes.js.
 // This is for code coverage
-const context = require.context('../../app', true, /^^((?!(app|reducers|routes)).)*\.js$/);
+const context = require.context('../../lib', true);
 context.keys().forEach(context);

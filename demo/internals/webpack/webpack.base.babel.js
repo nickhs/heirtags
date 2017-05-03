@@ -81,7 +81,7 @@ module.exports = (options) => ({
     }),
   ],
   resolve: {
-    modules: ['app', 'node_modules'],
+    modules: ['demo', 'node_modules'],
     extensions: [
       '',
       '.js',
