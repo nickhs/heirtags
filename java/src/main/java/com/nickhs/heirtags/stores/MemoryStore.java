@@ -111,7 +111,7 @@ public class MemoryStore<E> implements TagBagStore<E> {
                 match = new TagNode(new ArrayList<>(), next, prev);
                 matches.add(match);
                 this.store.put(next.getUnderlying().get(0), matches);
-            } else if (validMatches.size() == 0) {
+            } else if (validMatches.size() == 1) {
                 match = validMatches.get(0);
             } else {
                 // FIXME(nickhs): better error message here

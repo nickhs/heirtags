@@ -1,4 +1,4 @@
-test: test_python test_java
+test: test_python test_java test_js
 
 test_python:
 	cd py; \
@@ -6,4 +6,8 @@ test_python:
 
 test_java:
 	cd java; \
-	./gradlew test
+	./gradlew cleanTest test
+
+test_js:
+	cd js; \
+	yarn test

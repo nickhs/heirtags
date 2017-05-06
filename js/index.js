@@ -108,6 +108,14 @@ export default class TagBag {
     prev.entities.push(value);
   }
 
+  _matchKeys(search, other) {
+    if (search.indexOf("**") !== -1) {
+      throw new Error("Search cannot have **", search);
+    }
+
+
+  }
+
   findMatches(key) {
     let keys = key.split('/').filter(x => x.length > 0);
     const head = keys[0];
@@ -117,7 +125,8 @@ export default class TagBag {
       return [];
     }
 
-    const matchedKeys = Object.keys(this.keys).filter(x => x.toLowerCase().indexOf(head.toLowerCase()) !== -1);
+    const matchedKeys = Object.keys(this.keys)
+      .filter(x => x.toLowerCase().indexOf(head.toLowerCase()) !== -1);
     let potential = matchedKeys.reduce((prev, next) => {
       return prev.concat(this.keys[next]);
     }, []);
@@ -130,11 +139,14 @@ export default class TagBag {
     for (const keyItem of keys) {
       let newPotential = [];
 
+      throw "wtf";
+
       // eslint-disable-next-line no-restricted-syntax
       for (const pot of potential) {
         newPotential = newPotential.concat(
           pot.children.filter(p => {
-            return p.key.toLowerCase().indexOf(keyItem.toLowerCase()) !== -1;
+            // return p.key.toLowerCase() === keyItem.toLowerCase();
+            // return p.key.toLowerCase().indexOf(keyItem.toLowerCase()) !== -1;
           })
         );
       }

@@ -1,3 +1,5 @@
+import { Minimatch } from 'minimatch';
+
 // FIXME what does this thing do?
 export class Entity {
   constructor(value, tags = []) {
@@ -130,11 +132,14 @@ export default class TagBag {
     for (const keyItem of keys) {
       let newPotential = [];
 
+      // turn the keyItem into a regex?
+      const matcher = new Minimatch(keyItem.toLowerCase());
+
       // eslint-disable-next-line no-restricted-syntax
       for (const pot of potential) {
         newPotential = newPotential.concat(
           pot.children.filter(p => {
-            return p.key.toLowerCase().indexOf(keyItem.toLowerCase()) !== -1;
+            return matcher.match(p.key.toLowerCase());
           })
         );
       }

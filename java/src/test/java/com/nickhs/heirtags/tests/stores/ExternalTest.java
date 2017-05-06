@@ -40,7 +40,7 @@ public class ExternalTest {
     public void runExternalTests() throws Exception {
         List<Path> paths = Files.walk(testDirectory)
             .filter(Files::isRegularFile)
-            .filter(x -> x.endsWith(".json"))
+            .filter(x -> x.toString().endsWith(".json"))
             .collect(Collectors.toList());
 
         for (Path path : paths) {

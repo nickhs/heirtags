@@ -11,13 +11,17 @@ const PATHS = [
 describe('external tests', () => {
   PATHS.forEach(dirname => {
     const filenames = fs.readdirSync(dirname);
-    filenames.forEach(filename => {
-      const filepath = path.resolve(dirname, filename);
-      const testCommands = JSON.parse(fs.readFileSync(filepath));
-      describe(`${filepath}`, () => {
-        runTest(testCommands);
+    filenames
+      .filter(x => {
+        return x.match(/\.json$/) !== null;
+      })
+      .forEach(filename => {
+        const filepath = path.resolve(dirname, filename);
+        const testCommands = JSON.parse(fs.readFileSync(filepath));
+        describe(`${filepath}`, () => {
+          runTest(testCommands);
+        });
       });
-    });
   });
 });
 
@@ -32,8 +36,9 @@ function runTest(commands) {
         const matches = bag.findMatches(item.key)
         const entities = matches.reduce(
           (acc, x) => acc.concat(x.entities), []);
-        expect(matches.entities)
-          .toEqual(entities.results);
+        expect(entities)
+          .toEqual(expect.arrayContaining(item.results));
+        expect(entities.length).toEqual(item.results.length);
       } else {
         throw new Error(`unknown command: ${item}`);
       }
