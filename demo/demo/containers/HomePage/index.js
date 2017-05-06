@@ -1,7 +1,8 @@
+import TagBag from 'heirtags';
+
 import React from 'react';
 import styles from './styles.css';
 import HeirtagsView from '../../components/HeirtagsView';
-import TagBag from '../../../lib/index';
 import Autocomplete from '../../components/Autocomplete';
 import bookData from '../../bookData';
 
