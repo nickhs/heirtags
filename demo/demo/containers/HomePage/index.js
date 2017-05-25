@@ -1,10 +1,29 @@
 import TagBag from 'heirtags';
 
-import React from 'react';
+import React, { PropTypes } from 'react';
 import styles from './styles.css';
 import HeirtagsView from '../../components/HeirtagsView';
 import Autocomplete from '../../components/Autocomplete';
 import bookData from '../../bookData';
+
+export class Book extends React.Component {
+  render() {
+    const { book, onClick } = this.props;
+    return (
+      <a
+        className={styles.book}
+        onClick={onClick}
+      >
+        {book.name}
+      </a>
+    );
+  }
+}
+
+Book.propTypes = {
+  onClick: PropTypes.func.isRequired,
+  book: PropTypes.object.isRequired,
+};
 
 export default class HomePage extends React.Component {
   constructor(props) {
@@ -65,15 +84,11 @@ export default class HomePage extends React.Component {
   render() {
     const { bookBag, selected, active } = this.state;
     const selectedBooks = Array.from(selected).map(x => {
-      return (
-        <a
-          key={x.id}
-          className={styles.book}
-          onClick={this.handleBookDetails.bind(this, x)}
-        >
-          {x.name}
-        </a>
-      );
+      return (<Book
+        book={x}
+        key={x.id}
+        onClick={this.handleBookDetails.bind(this, x)}
+      />);
     });
 
     let details = null;
@@ -136,14 +151,14 @@ export default class HomePage extends React.Component {
           </h3>
 
           <p>
-            Heirtags are a better way to tag, classify and categorize entities in your system.
-            Contemporary tagging makes use of a many-to-many relationship to allow developers
-            to express multiple attributes on an entity. However these tags are often simple
+            Heirtags are a better way to tag, classify and categorize entities in a system.
+            Contemporary tagging makes use of many-to-many relationships
+            to express attributes on an entity - however these tags are often simple
             strings that can quicky become unmanageable.
           </p>
 
           <p>
-            Heirtags make use of tags that are heirarchical in nature. Each tag looks something like:
+            Heirtags make use of tags that are heirarchical in nature. Each tag looks something like a file path:
           </p>
 
           <pre className={styles.demo}>
@@ -151,12 +166,36 @@ export default class HomePage extends React.Component {
           </pre>
 
           <p>
-            Below is an example of a library of books that have been tagged accordingly by author, type and genre.
+            Where they build up a heirachy seperated by forward slashes.
+            You can have multiple tags per entity (like a conventional tagging system).
+            By using paths you can answer questions like - <span className={styles.question}>
+                show me all the British authors:
+              </span>
+          </p>
+
+          <pre className={styles.demo}>
+            /core/authors/British/&#42;&#42;
+          </pre>
+
+          <p>
+            or, <span className={styles.question}>
+                show me all authors starting with Winston:
+              </span>
+          </p>
+
+          <pre className={styles.demo}>
+            /core/authors/British/Winston*
+          </pre>
+
+          <p className={styles.library}>
+            Here&rsquo;s an example of a library of books that have been tagged accordingly by author, type and genre.
             You can drill down on the tags, search through them and add new tags to the existing books.
           </p>
         </div>
 
-        <div className={styles.panes}>
+        <div className={`${styles.library} ${styles.divider}`} />
+
+        <div className={styles.library}>
           <div className={styles.leftPane}>
             <HeirtagsView
               tagbag={bookBag}
@@ -170,6 +209,40 @@ export default class HomePage extends React.Component {
             </div>
 
             { details }
+          </div>
+        </div>
+
+        <div className={styles.divider} />
+
+        <div>
+          <div>
+            Heirtags is available in the following languages and backends:
+          </div>
+
+          <div>
+            <div className={styles.langCont}>
+              <div className={styles.langs}>
+                Java
+                <ol>
+                  <li>PostgreSQL</li>
+                  <li>In-memory</li>
+                </ol>
+              </div>
+
+              <div className={styles.langs}>
+                Python
+                <ol>
+                  <li>In-memory</li>
+                </ol>
+              </div>
+
+              <div className={styles.langs}>
+                Javascript
+                <ol>
+                  <li>In-memory</li>
+                </ol>
+              </div>
+            </div>
           </div>
         </div>
       </div>

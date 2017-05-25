@@ -69,6 +69,10 @@ export default class Autocomplete extends React.Component {
     const { tagbag, className, wrapperStyle } = this.props;
     const { search } = this.state;
 
+    const wrapperStyleCustom = Object.assign({}, wrapperStyle, {
+      display: 'block',
+    });
+
     let matches = [];
     if (search) {
       matches = tagbag.findMatches(search);
@@ -88,7 +92,7 @@ export default class Autocomplete extends React.Component {
           placeholder: 'Search Tags',
           onKeyDown: this.handleKeyPress.bind(this, autocomplete[0]),
         }}
-        wrapperStyle={wrapperStyle}
+        wrapperStyle={wrapperStyleCustom}
       />);
 
     return (

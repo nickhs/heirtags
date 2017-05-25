@@ -15,11 +15,11 @@
   margin: 0 10px;
 }
 
-.panes {
+.library {
   display: flex;
 }
 
-.panes > div {
+.library > div {
   margin: 0 10px;
 }
 
@@ -45,6 +45,7 @@
   align-content: flex-start;
   align-self: flex-start;
   flex-grow: 2;
+  min-height: 150px;
 }
 
 .leftPane {
@@ -66,7 +67,7 @@
   align-items: center;
   justify-content: center;
   overflow-y: scroll;
-  max-height: 50vh;
+  height: 370px;
 }
 
 .detailsPane {
@@ -186,9 +187,36 @@
   .leftPane {
     min-width: 175px;
   }
+
+  .library {
+    height: 0;
+    overflow: hidden;
+  }
 }
 
 .demo {
   background: #F0F0F0;
   padding: 1em;
+}
+
+.question {
+  font-style: italic;
+}
+
+.langCont {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.divider {
+  padding: 1em 0;
+}
+
+.divider::after {
+  content: '';
+  border-bottom: 1px solid #ECECEC;
+  width: 50px;
+  position: absolute;
+  left: calc(50% - 50px);
 }
