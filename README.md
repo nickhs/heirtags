@@ -45,10 +45,10 @@ Every book (entity) could have multiple tags accordingly, and it's easy to add n
 Heirtags describes a scheme to store hierarchical tags, there are a number of implementations:
 
 | Language | In-memory | PostgreSQL
------------------------------------
-| Java | Yes | Yes
-| Javascript | Yes |
-| Python | Yes |
+-----------|-----------|-----------
+| Java | Yes | Yes |
+| Javascript | Yes ||
+| Python | Yes ||
 
 ## Tests
 
